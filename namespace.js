@@ -2,7 +2,6 @@ const asyncHooks = require('async_hooks');
 
 
 class Namespace {
-
 	constructor() {
 		this.context = {};
 	}
@@ -10,7 +9,11 @@ class Namespace {
 	run(fn) {
 		const eid = asyncHooks.executionAsyncId();
 		this.context[eid] = {};
-		fn();
+		try {
+			return fn();
+		} finally {
+			delete this.context[eid];
+		}
 	}
 
 	set(key, val) {
